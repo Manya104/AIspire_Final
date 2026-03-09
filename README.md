@@ -90,25 +90,50 @@ Select2 for searchable dropdowns
 Vis.js (for Career Path Visualization)
 
 📁 Project Structure
-AIspire/
+nco-sem-py/
 │
-├── backend/
-│   ├── app.py
-│   ├── model_embedder.py
-│   ├── data/
-│   │   ├── nco_full_data.json
-│   │   └── career_paths.json
-│   └── ...
+├── extracter_nco.py                 # Script for extracting NCO data
+├── README.md                        # Project documentation
+├── requirements.txt                 # Python dependencies
 │
-├── frontend/
-│   ├── index.html
-│   ├── accessible.html
-│   ├── style.css
-│   ├── script.js
-│   ├── accessible.js
-│   └── career_path.js
+├── backend/                         # Flask backend API
+│   ├── app.py                       # Main Flask application
+│   ├── audit_log.json               # Audit logs for API usage
+│   ├── model_embedder.py            # Sentence transformer model for embeddings
+│   ├── nco-embeddings.json          # Precomputed embeddings for NCO data
+│   ├── __pycache__/                 # Python bytecode cache (ignored)
+│   └── data/                        # Data files
+│       ├── career_paths.json        # Career path data
+│       ├── nco_full_data.json       # Full NCO dataset
+│       └── training_centers_noida.json  # Training center information
 │
-└── README.md
+├── evaluation/                      # Evaluation and testing scripts
+│   ├── app_baseline.py              # Baseline evaluation app
+│   ├── evaluation_results.csv       # Results of evaluations
+│   ├── model_test.py                # Model testing script
+│   ├── nco_full_data.json           # NCO data for evaluation
+│   └── test_queries_updated.csv     # Test queries for evaluation
+│
+├── frontend/                        # Web frontend
+│   ├── accessible.css               # Styles for accessibility features
+│   ├── accessible.html              # Accessible version of the interface
+│   ├── accessible.js                # JavaScript for accessibility
+│   ├── admin.html                   # Admin interface
+│   ├── admin.js                     # Admin JavaScript
+│   ├── audit.html                   # Audit log viewer
+│   ├── career-path.html             # Career path visualization page
+│   ├── index.html                   # Main search interface
+│   ├── landing.html                 # Landing page
+│   ├── map.html                     # Map view for training centers
+│   ├── script.js                    # Main JavaScript for search
+│   ├── skill_india_jobs_with_skills.json  # Skills data
+│   ├── skillcard.html               # Skill card display
+│   ├── style.css                    # Main styles
+│   └── translations.js              # Multilingual translations
+│
+└── stitch_aispire_landing_page/      # Landing page assets
+    ├── code.html                    # HTML code for landing page
+    └── screen.png                   # Screenshot or image
 
 ⚙️ Installation & Setup Guide
 Prerequisites
@@ -121,7 +146,7 @@ A modern browser (Chrome/Edge recommended)
 
 🖥️ Backend Setup (Python)
 1. Clone the repository
-git clone https://github.com/your-username/AIspire.git
+git clone https://github.com/SVJSurya/AIspire.git
 cd AIspire/backend
 
 2. Create a virtual environment
