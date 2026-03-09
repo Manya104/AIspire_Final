@@ -4,90 +4,83 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Skill Card Generator – Skill India</title>
-
-  <!-- PicoCSS for clean responsive layout -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-
+  <title>AISPIRE — Skill Card Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@24,400,0&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2dd4bf",
+            "background-light": "#f8f6f6",
+            "accent-blue": "#3b82f6",
+            "accent-pink": "#ec4899"
+          },
+          fontFamily: { display: ["Space Grotesk", "sans-serif"] }
+        }
+      }
+    };
+  </script>
   <style>
     body {
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #abbdcc 0%, #b4e0ff 60%, #b1d7ea 100%);
-      color: white;
+      font-family: "Space Grotesk", sans-serif;
+      background: #f8f6f6;
+      color: #0f172a;
       min-height: 100vh;
       padding: 0;
+      margin: 0;
     }
 
     .container {
       display: flex;
       flex-wrap: wrap;
-      min-height: 100vh;
+      min-height: calc(100vh - 0px);
     }
 
-    /* Left Panel Glass Style */
     .left-panel {
       flex: 1;
       min-width: 300px;
       max-width: 400px;
-      background: rgb(19 70 93 / 9%);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(14px);
       padding: 2rem;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.1);
-      border-right: 1px solid rgba(255, 255, 255, 0.2);
+      border-right: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 4px 0 20px rgba(0, 0, 0, 0.04);
     }
 
-    .left-panel h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-    }
-
-    .left-panel p {
-      font-size: 0.95rem;
-      opacity: 0.85;
-      margin-bottom: 1.5rem;
-      color: #0d47a1;
-    }
+    .left-panel h1 { font-size: 2rem; margin-bottom: 1rem; color: #0f172a; }
+    .left-panel p { font-size: 0.95rem; margin-bottom: 1.5rem; color: #475569; }
 
     .search-box input {
       padding: 12px 16px;
       font-size: 1rem;
-      border-radius: 8px;
-      border: none;
+      border-radius: 0.75rem;
+      border: 1px solid #e2e8f0;
       outline: none;
-      background: rgb(255 255 255 / 76%);
-      color: rgb(53, 144, 193);
-      backdrop-filter: blur(8px);
+      background: #fff;
+      color: #0f172a;
     }
-
-    .search-box input::placeholder {
-      color: rgb(53, 144, 193);
-    }
+    .search-box input:focus { border-color: #2dd4bf; box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.2); }
+    .search-box input::placeholder { color: #94a3b8; }
 
     .results {
-      background: rgba(150, 230, 242, 0.15);
-      color: white;
-      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      border-radius: 0.75rem;
       overflow-y: auto;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+      border: 1px solid #e2e8f0;
       max-height: 200px;
       margin-top: 0.5rem;
     }
+    .result-item { padding: 10px 15px; cursor: pointer; transition: background 0.2s; }
+    .result-item:hover { background: rgba(45, 212, 191, 0.12); }
 
-    .result-item {
-      padding: 10px 15px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-
-    .result-item:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    /* Right Panel Glass Style */
     .right-panel {
       flex: 2;
       min-width: 350px;
@@ -95,132 +88,93 @@
       align-items: center;
       justify-content: center;
       padding: 2rem;
+      background: linear-gradient(135deg, rgba(45, 212, 191, 0.06) 0%, rgba(248, 246, 246, 0.9) 100%);
     }
 
     .card {
-      background: rgba(255, 255, 255, 0.15);
-      color: white;
-      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.95);
+      color: #0f172a;
+      border-radius: 1.25rem;
       padding: 2rem;
       max-width: 600px;
       width: 100%;
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
       animation: fadeIn 0.4s ease-in-out;
       display: none;
-      backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid #e2e8f0;
     }
+    .card.active { display: block; }
+    .card h2 { margin-bottom: 0.8rem; color: #0f172a; font-weight: 700; }
 
-    .card.active {
-      display: block;
-    }
-
-    .card h2 {
-      margin-bottom: 0.8rem;
-      color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
-    }
-
-    .skills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 10px 0;
-    }
-
+    .skills { display: flex; flex-wrap: wrap; gap: 10px; margin: 10px 0; }
     .skill-tag {
-      background: rgb(8 93 154 / 20%);
-      color: white;
+      background: rgba(45, 212, 191, 0.15);
+      color: #0f766e;
       padding: 6px 14px;
-      border-radius: 20px;
+      border-radius: 999px;
       font-size: 0.9rem;
       transition: transform 0.2s, background 0.3s;
-      backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(45, 212, 191, 0.4);
     }
-
-    .skill-tag:hover {
-      transform: scale(1.05);
-      background: rgba(185, 225, 235, 0.76);
-    }
+    .skill-tag:hover { transform: scale(1.05); background: rgba(45, 212, 191, 0.25); }
 
     .links a {
       display: inline-block;
       margin: 8px 5px 0 0;
       padding: 8px 14px;
-      background: rgba(255, 111, 0, 0.8);
+      background: #2dd4bf;
       color: white;
       text-decoration: none;
-      border-radius: 5px;
-      transition: transform 0.2s, background 0.3s;
-      backdrop-filter: blur(4px);
+      border-radius: 0.5rem;
+      transition: opacity 0.2s, transform 0.2s;
     }
-
-    .links a:hover {
-      background: rgba(230, 81, 0, 0.85);
-      transform: translateY(-2px);
-    }
+    .links a:hover { opacity: 0.9; transform: translateY(-2px); }
 
     .print-btn {
       margin-top: 15px;
       padding: 10px 20px;
-      background: rgba(13, 71, 161, 0.8);
+      background: #334155;
       color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 0.75rem;
       font-size: 1rem;
       cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
-      backdrop-filter: blur(4px);
+      transition: opacity 0.2s, transform 0.2s;
     }
+    .print-btn:hover { opacity: 0.9; transform: translateY(-1px); }
 
-    .print-btn:hover {
-      background: rgba(8, 48, 107, 0.85);
-      transform: translateY(-1px);
-    }
-
-    /* Print View */
     @media print {
-      body {
-        background: white;
-        color: black;
-      }
-
-      .left-panel,
-      .print-btn {
-        display: none;
-      }
-
-      .card {
-        background: white;
-        color: black;
-        border: 2px solid #0d47a1;
-        box-shadow: none;
-      }
+      body { background: white; color: black; }
+      .site-header, .site-footer, .left-panel, .print-btn { display: none !important; }
+      .card { background: white; color: black; border: 2px solid #0f766e; box-shadow: none; }
     }
-
-    /* Animations */
     @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: translateY(15px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(15px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-
-    h4 {
-      --color: #4081b4;
-    }
+    h4 { color: #0f766e; }
   </style>
 </head>
 
-<body>
+<body class="flex flex-col min-h-screen">
+  <header class="site-header sticky top-0 z-40 flex items-center justify-between border-b border-primary/10 px-6 md:px-20 py-4 bg-background-light/95 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <div class="relative size-10 flex items-center justify-center">
+        <div class="absolute inset-0 bg-accent-blue opacity-20 rounded-full blur-lg"></div>
+        <span class="material-symbols-outlined text-primary font-bold text-2xl">blur_on</span>
+      </div>
+      <a href="landing.html" class="text-xl font-bold tracking-tight text-slate-900 hover:text-primary transition-colors">AISPIRE</a>
+    </div>
+    <nav class="flex flex-1 justify-end items-center gap-4 md:gap-6 flex-wrap">
+      <a href="career-path.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Career Paths</a>
+      <a href="map.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Map</a>
+      <a href="index.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Search</a>
+      <a href="accessible.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Accessible</a>
+      <a href="landing.html" class="inline-flex items-center justify-center rounded-lg h-10 px-5 bg-primary text-white text-sm font-bold shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">Home</a>
+    </nav>
+  </header>
 
-  <div class="container">
+  <div class="container flex-1">
     <!-- Left: Search -->
     <div class="left-panel">
       <h1>🪪 Skill Card Generator</h1>
@@ -5842,6 +5796,9 @@
     }
   </script>
 
+  <footer class="site-footer border-t border-slate-200 bg-white/90 py-4 text-center text-sm text-slate-500">
+    <p>AISPIRE — Built for the National Career Hackathon</p>
+  </footer>
 </body>
 
 </html>

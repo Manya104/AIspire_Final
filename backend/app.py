@@ -235,6 +235,44 @@ def get_career_path():
         return jsonify({"error": str(e)}), 500
 
 
+@app.route('/career-path', methods=['GET'])
+def get_career_path_legacy():
+    """
+    Convenience route matching `/career-path?job=teacher`.
+    It maps the `job` query param to the closest matching career title
+    in `career_paths.json` (case-insensitive substring match).
+    """
+    job_query = request.args.get('job', '').strip()
+    if not job_query:
+        return jsonify({"error": "Missing 'job' query parameter"}), 400
+
+    try:
+        with open(CAREER_PATHS_FILE, 'r', encoding='utf-8') as f:
+            paths = json.load(f)
+    except Exception as e:
+        return jsonify({"error": f"Failed to load career paths: {e}"}), 500
+
+    # Exact (case-insensitive) match first
+    lowered_query = job_query.lower()
+    for title in paths.keys():
+        if title.lower() == lowered_query:
+            return jsonify(paths[title])
+
+    # Fallback: substring match
+    candidates = [
+        (title, data)
+        for title, data in paths.items()
+        if lowered_query in title.lower()
+    ]
+
+    if not candidates:
+        return jsonify({"error": f"No career path found for job '{job_query}'"}), 404
+
+    # For now, return the first candidate; could be improved with scoring later
+    best_title, best_data = candidates[0]
+    return jsonify(best_data)
+
+
 @app.route('/update-json', methods=['POST'])
 def update_json():
     try:

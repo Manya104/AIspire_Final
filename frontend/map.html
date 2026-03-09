@@ -1,82 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Locate Nearest Training Center</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AISPIRE — Locate Nearest Training Center</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
- <style>
-  body {
-    font-family: 'Inter', sans-serif;
-    background: linear-gradient(135deg, #e2f2ff 0%, #b4e0ff 60%, #ffffff 100%);
-    color: #14375a;
-    margin: 0;
-    min-height: 87vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 40px;
-  }
-  h2 {
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  .map-container {
-    background: rgba(255, 255, 255, 0.52);
-    box-shadow: 0 8px 32px 0 rgba(104, 164, 255, 0.12);
-    border: 1.5px solid rgba(183, 231, 255, 0.3);
-    border-radius: 2rem;
-    backdrop-filter: blur(22px);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  #map {
-    height: 500px;
-    width: 800px;
-    border-radius: 1rem;
-  }
-  .controls {
-    margin-bottom: 15px;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-  select, button {
-    padding: 8px 16px;
-    border-radius: 6px;
-    border: none;
-    font-size: 14px;
-  }
-  button {
-    background: #0ea5e9;
-    color: white;
-    cursor: pointer;
-    transition: background 0.3s;
-  }
-  button:hover {
-    background: #b1e5fd;
-    color: #14375a;
-  }
-  @media (max-width: 900px) {
-    #map { width: 100%; height: 400px; }
-  }
-</style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@24,400,0&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2dd4bf",
+            "background-light": "#f8f6f6",
+            "accent-blue": "#3b82f6",
+            "accent-pink": "#ec4899"
+          },
+          fontFamily: { display: ["Space Grotesk", "sans-serif"] }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: "Space Grotesk", sans-serif; }
+    #map { height: 500px; width: 100%; max-width: 800px; border-radius: 1rem; }
+    @media (max-width: 900px) { #map { height: 400px; } }
+  </style>
 </head>
-<body>
-  <h2>Locate Nearest Training Center</h2>
-  <div class="map-container">
-    <div class="controls">
-      <select id="citySelect">
-        <option value="NCR">NCR</option>
-        <option value="Lucknow">Lucknow</option>
-        <option value="Gurgaon">Gurgaon</option>
-      </select>
-      <button id="searchBtn">Search</button>
-      <button id="locateBtn">Show My Location</button>
+<body class="bg-background-light text-slate-900 min-h-screen flex flex-col">
+  <header class="sticky top-0 z-50 flex items-center justify-between border-b border-primary/10 px-6 md:px-20 py-4 bg-background-light/90 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <div class="relative size-10 flex items-center justify-center">
+        <div class="absolute inset-0 bg-accent-blue opacity-20 rounded-full blur-lg"></div>
+        <span class="material-symbols-outlined text-primary font-bold text-2xl">blur_on</span>
+      </div>
+      <a href="landing.html" class="text-xl font-bold tracking-tight hover:text-primary transition-colors">AISPIRE</a>
     </div>
-    <div id="map"></div>
-  </div>
+    <nav class="flex flex-1 justify-end items-center gap-4 md:gap-6 flex-wrap">
+      <a href="career-path.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Career Paths</a>
+      <a href="index.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Search</a>
+      <a href="skillcard.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Skill-Card</a>
+      <a href="accessible.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Accessible</a>
+      <a href="landing.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Home</a>
+    </nav>
+  </header>
+
+  <main class="flex-1 flex flex-col items-center px-4 py-8">
+    <h2 class="text-xl font-bold text-slate-900 mb-6">Locate Nearest Training Center</h2>
+    <div class="w-full max-w-4xl bg-white/90 backdrop-blur rounded-2xl border border-slate-200 shadow-lg p-6 flex flex-col items-center">
+      <div class="controls flex gap-3 flex-wrap justify-center mb-4">
+        <select id="citySelect" class="px-4 py-2 rounded-xl border border-slate-300 focus:ring-2 focus:ring-primary focus:border-primary outline-none">
+          <option value="NCR">NCR</option>
+          <option value="Lucknow">Lucknow</option>
+          <option value="Gurgaon">Gurgaon</option>
+        </select>
+        <button id="searchBtn" class="px-5 py-2 rounded-xl bg-primary text-white font-semibold shadow-lg shadow-primary/20 hover:opacity-90 transition-opacity">Search</button>
+        <button id="locateBtn" class="px-5 py-2 rounded-xl border-2 border-slate-300 text-slate-700 font-semibold hover:border-primary hover:text-primary transition-colors">Show My Location</button>
+      </div>
+      <div id="map"></div>
+    </div>
+  </main>
+
+  <footer class="border-t border-slate-200 bg-white/80 py-4 text-center text-sm text-slate-500">
+    <p>Built with ❤️ for the National Career Hackathon</p>
+  </footer>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
   <script>

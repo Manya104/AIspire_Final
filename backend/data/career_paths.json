@@ -1,0 +1,208 @@
+{
+  "Primary School Teacher": {
+    "title": "Primary School Teacher",
+    "code": "2341.0400",
+    "progression": [
+      "Primary School Teacher",
+      "Senior Teacher",
+      "Headmaster",
+      "Education Administrator"
+    ],
+    "nodes": [
+      {
+        "id": "2341.0400",
+        "label": "Primary School Teacher",
+        "level": 1,
+        "nco_code": "2341.0400"
+      },
+      {
+        "id": "primary_senior_teacher",
+        "label": "Senior Teacher",
+        "level": 2,
+        "nco_code": null
+      },
+      {
+        "id": "1345.0100",
+        "label": "Headmaster",
+        "level": 3,
+        "nco_code": "1345.0100"
+      },
+      {
+        "id": "2351.0100",
+        "label": "School Inspector / Education Administrator",
+        "level": 4,
+        "nco_code": "2351.0100"
+      }
+    ],
+    "edges": [
+      { "from": "2341.0400", "to": "primary_senior_teacher" },
+      { "from": "primary_senior_teacher", "to": "1345.0100" },
+      { "from": "1345.0100", "to": "2351.0100" }
+    ]
+  },
+  "Software Engineer": {
+    "title": "Software Engineer",
+    "code": "2512.0100",
+    "progression": [
+      "Software Engineer",
+      "Senior Software Engineer",
+      "Lead Software Engineer",
+      "Engineering Manager",
+      "Director of Engineering"
+    ],
+    "nodes": [
+      { "id": "se", "label": "Software Engineer", "level": 1, "nco_code": "2512.0100" },
+      { "id": "sse", "label": "Senior Software Engineer", "level": 2 },
+      { "id": "lse", "label": "Lead Software Engineer", "level": 3 },
+      { "id": "em", "label": "Engineering Manager", "level": 4, "nco_code": "1222.0100" },
+      { "id": "doe", "label": "Director of Engineering", "level": 5 }
+    ],
+    "edges": [
+      { "from": "se", "to": "sse" },
+      { "from": "sse", "to": "lse" },
+      { "from": "lse", "to": "em" },
+      { "from": "em", "to": "doe" }
+    ]
+  },
+  "Police Officer": {
+    "title": "Police Officer",
+    "code": "5412.0100",
+    "progression": [
+      "Police Officer",
+      "Senior Police Officer",
+      "Inspector",
+      "Superintendent",
+      "Commissioner"
+    ],
+    "nodes": [
+      { "id": "po", "label": "Police Officer", "level": 1, "nco_code": "5412.0100" },
+      { "id": "spo", "label": "Senior Police Officer", "level": 2 },
+      { "id": "insp", "label": "Inspector", "level": 3, "nco_code": "3341.0100" },
+      { "id": "supt", "label": "Superintendent", "level": 4 },
+      { "id": "comm", "label": "Commissioner", "level": 5 }
+    ],
+    "edges": [
+      { "from": "po", "to": "spo" },
+      { "from": "spo", "to": "insp" },
+      { "from": "insp", "to": "supt" },
+      { "from": "supt", "to": "comm" }
+    ]
+  },
+  "Registered Nurse": {
+    "title": "Registered Nurse",
+    "code": "2221.0100",
+    "progression": [
+      "Registered Nurse",
+      "Nursing Supervisor",
+      "Nurse Manager",
+      "Director of Nursing"
+    ],
+    "nodes": [
+      { "id": "rn", "label": "Registered Nurse", "level": 1, "nco_code": "2221.0100" },
+      { "id": "ns", "label": "Nursing Supervisor", "level": 2 },
+      { "id": "nm", "label": "Nurse Manager", "level": 3 },
+      { "id": "don", "label": "Director of Nursing", "level": 4 }
+    ],
+    "edges": [
+      { "from": "rn", "to": "ns" },
+      { "from": "ns", "to": "nm" },
+      { "from": "nm", "to": "don" }
+    ]
+  },
+  "Chef": {
+    "title": "Chef",
+    "code": "3434.0100",
+    "progression": [
+      "Commis Chef",
+      "Chef de Partie",
+      "Sous Chef",
+      "Head Chef",
+      "Executive Chef"
+    ],
+    "nodes": [
+      { "id": "cc", "label": "Commis Chef", "level": 1 },
+      { "id": "cdp", "label": "Chef de Partie", "level": 2 },
+      { "id": "sc", "label": "Sous Chef", "level": 3, "nco_code": "3434.0100" },
+      { "id": "hc", "label": "Head Chef", "level": 4 },
+      { "id": "ec", "label": "Executive Chef", "level": 5, "nco_code": "1120.3100" }
+    ],
+    "edges": [
+      { "from": "cc", "to": "cdp" },
+      { "from": "cdp", "to": "sc" },
+      { "from": "sc", "to": "hc" },
+      { "from": "hc", "to": "ec" }
+    ]
+  },
+  "Accountant": {
+    "title": "Accountant",
+    "code": "2411.0100",
+    "progression": [
+      "Junior Accountant",
+      "Accountant",
+      "Senior Accountant",
+      "Accounting Manager",
+      "Chief Financial Officer"
+    ],
+    "nodes": [
+      { "id": "ja", "label": "Junior Accountant", "level": 1 },
+      { "id": "acct", "label": "Accountant", "level": 2, "nco_code": "2411.0100" },
+      { "id": "sa", "label": "Senior Accountant", "level": 3 },
+      { "id": "am", "label": "Accounting Manager", "level": 4 },
+      { "id": "cfo", "label": "Chief Financial Officer", "level": 5, "nco_code": "1120.0700" }
+    ],
+    "edges": [
+      { "from": "ja", "to": "acct" },
+      { "from": "acct", "to": "sa" },
+      { "from": "sa", "to": "am" },
+      { "from": "am", "to": "cfo" }
+    ]
+  },
+  "Civil Engineer": {
+    "title": "Civil Engineer",
+    "code": "2142.0100",
+    "progression": [
+      "Junior Civil Engineer",
+      "Civil Engineer",
+      "Senior Civil Engineer",
+      "Project Manager",
+      "Chief Engineer"
+    ],
+    "nodes": [
+      { "id": "jce", "label": "Junior Civil Engineer", "level": 1 },
+      { "id": "ce", "label": "Civil Engineer", "level": 2, "nco_code": "2142.0100" },
+      { "id": "sce", "label": "Senior Civil Engineer", "level": 3 },
+      { "id": "pm", "label": "Project Manager", "level": 4, "nco_code": "1323.9900" },
+      { "id": "che", "label": "Chief Engineer", "level": 5 }
+    ],
+    "edges": [
+      { "from": "jce", "to": "ce" },
+      { "from": "ce", "to": "sce" },
+      { "from": "sce", "to": "pm" },
+      { "from": "pm", "to": "che" }
+    ]
+  },
+  "Sales Representative": {
+    "title": "Sales Representative",
+    "code": "3322.0100",
+    "progression": [
+      "Sales Representative",
+      "Senior Sales Representative",
+      "Territory Manager",
+      "Regional Sales Manager",
+      "National Sales Director"
+    ],
+    "nodes": [
+      { "id": "sr", "label": "Sales Representative", "level": 1, "nco_code": "3322.0100" },
+      { "id": "ssr", "label": "Senior Sales Representative", "level": 2 },
+      { "id": "tm", "label": "Territory Manager", "level": 3, "nco_code": "1221.0501" },
+      { "id": "rsm", "label": "Regional Sales Manager", "level": 4, "nco_code": "1221.0100" },
+      { "id": "nsd", "label": "National Sales Director", "level": 5 }
+    ],
+    "edges": [
+      { "from": "sr", "to": "ssr" },
+      { "from": "ssr", "to": "tm" },
+      { "from": "tm", "to": "rsm" },
+      { "from": "rsm", "to": "nsd" }
+    ]
+  }
+}

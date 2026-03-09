@@ -4,58 +4,66 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Accessible Career Portal — CareerScope.ai</title>
-
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+  <title>AISPIRE — Accessible Career Portal</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL@24,400,0&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: "#2dd4bf",
+            "background-light": "#f8f6f6",
+            "accent-blue": "#3b82f6",
+            "accent-pink": "#ec4899"
+          },
+          fontFamily: { display: ["Space Grotesk", "sans-serif"] }
+        }
+      }
+    };
+  </script>
   <link rel="stylesheet" href="accessible.css" />
-
   <style>
     body {
       margin: 0;
-      font-family: 'Poppins', sans-serif;
-      background: linear-gradient(to bottom right, rgba(83, 167, 220, 0.7), rgba(255, 255, 255, 0.6), rgba(141, 221, 235, 0.7));
-      /* 🇮🇳 Tricolor with transparency */
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      font-family: "Space Grotesk", sans-serif;
+      background: #f8f6f6;
+      min-height: 100vh;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 85vh;
+      flex-direction: column;
     }
 
     main.accessible-container {
-      background: rgba(255, 255, 255, 0.15);
-      /* Transparent glass effect */
+      background: rgba(255, 255, 255, 0.9);
       padding: 2rem;
-      border-radius: 15px;
+      border-radius: 1.25rem;
       max-width: 650px;
       width: 90%;
-      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+      margin: 0 auto;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
       text-align: center;
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(0, 0, 0, 0.06);
     }
 
     .accessible-search input,
     .accessible-search button {
       padding: 0.6rem 1rem;
       font-size: 1rem;
-      border-radius: 8px;
-      border: 2px solid #333;
+      border-radius: 0.75rem;
+      border: 2px solid #334155;
       margin: 0.4rem 0.3rem;
     }
 
     .accessible-search button {
-      background-color: #007bff;
+      background-color: #2dd4bf;
       color: white;
       border: none;
       cursor: pointer;
     }
 
     .accessible-search button:hover {
-      background-color: #0056b3;
+      opacity: 0.9;
     }
 
     .accessibility-controls {
@@ -66,9 +74,9 @@
       padding: 0.6rem 1rem;
       font-size: 1rem;
       border: none;
-      background-color: #222;
+      background-color: #334155;
       color: white;
-      border-radius: 8px;
+      border-radius: 0.75rem;
       cursor: pointer;
       margin: 0.3rem;
     }
@@ -81,22 +89,20 @@
     .results-area {
       margin-top: 1.2rem;
       text-align: left;
-      background-color: rgba(244, 244, 244, 0.3);
+      background-color: rgba(248, 246, 246, 0.9);
       padding: 1rem;
-      border-radius: 10px;
+      border-radius: 0.75rem;
       min-height: 100px;
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+      border: 1px solid rgba(0, 0, 0, 0.08);
     }
 
     footer {
       margin-top: 1.5rem;
       font-size: 0.9rem;
-      color: #333;
+      color: #64748b;
     }
 
-    /* ♿ High Contrast Mode */
+    /* ♿ High Contrast Mode — do not change; for accessibility */
     .high-contrast {
       background-color: black !important;
       color: yellow !important;
@@ -115,7 +121,24 @@
 </head>
 
 <body>
-  <main class="accessible-container" role="main">
+  <header class="sticky top-0 z-40 flex items-center justify-between border-b border-primary/10 px-6 md:px-20 py-4 bg-background-light/90 backdrop-blur-md">
+    <div class="flex items-center gap-3">
+      <div class="relative size-10 flex items-center justify-center">
+        <div class="absolute inset-0 bg-accent-blue opacity-20 rounded-full blur-lg"></div>
+        <span class="material-symbols-outlined text-primary font-bold text-2xl">blur_on</span>
+      </div>
+      <a href="landing.html" class="text-xl font-bold tracking-tight hover:text-primary transition-colors">AISPIRE</a>
+    </div>
+    <nav class="flex flex-1 justify-end items-center gap-4 md:gap-6 flex-wrap">
+      <a href="career-path.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Career Paths</a>
+      <a href="map.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Map</a>
+      <a href="skillcard.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Skill-Card</a>
+      <a href="index.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Search</a>
+      <a href="landing.html" class="text-slate-600 text-sm font-medium hover:text-primary transition-colors">Home</a>
+    </nav>
+  </header>
+
+  <main class="accessible-container flex-1 py-8" role="main">
     <h1 tabindex="0" aria-label="Inclusive Career Search">♿ Inclusive Career Search</h1>
     <p tabindex="0" aria-label="Portal for people with disabilities to search for jobs.">
       This portal is designed for people with disabilities to search for careers using an accessible interface.
@@ -150,6 +173,10 @@
       <p>Built with ❤️ for inclusive opportunity at the National Career Hackathon</p>
     </footer>
   </main>
+
+  <footer class="border-t border-slate-200 bg-white/80 py-4 text-center text-sm text-slate-500">
+    <a href="landing.html" class="hover:text-primary transition-colors">AISPIRE</a> — Built for the National Career Hackathon
+  </footer>
 
   <script src="accessible.js"></script>
 </body>
