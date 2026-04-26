@@ -25,10 +25,13 @@ def create_app():
     # ----------------------------
     # Ensure audit file exists
     # ----------------------------
-    if not os.path.exists(AUDIT_FILE):
-        os.makedirs(os.path.dirname(AUDIT_FILE), exist_ok=True)
-        with open(AUDIT_FILE, "w") as f:
-            json.dump([], f)
+    try:
+        if not os.path.exists(AUDIT_FILE):
+            os.makedirs(os.path.dirname(AUDIT_FILE), exist_ok=True)
+            with open(AUDIT_FILE, "w") as f:
+                json.dump([], f)
+    except Exception as e:
+        print("⚠ Audit file setup issue:", e)
 
     # ----------------------------
     # SAFE ML LOADING (Render-friendly)
@@ -39,7 +42,7 @@ def create_app():
     cluster_model = None
 
     try:
-        print("📦 Loading ML models...")
+        print("📦 Loading ML models (this may take time)...")
 
         from ml.search_engine import HybridSearchEngine
         from ml.intent_classifier import IntentClassifier
@@ -59,20 +62,23 @@ def create_app():
         print("✔ Job Clustering loaded")
 
     except Exception as e:
-        print("⚠ ML loading failed, running in fallback mode:")
+        print("⚠ ML loading failed — running fallback mode")
         print(str(e))
 
     # ----------------------------
-    # Wire engines
+    # Wire engines (safe even if None)
     # ----------------------------
-    init_search_engine(engine)
-    init_admin_engine(engine)
+    try:
+        init_search_engine(engine)
+        init_admin_engine(engine)
 
-    init_ml_models(
-        intent_classifier=intent_clf,
-        cluster_model=cluster_model,
-        ner_extractor=ner,
-    )
+        init_ml_models(
+            intent_classifier=intent_clf,
+            cluster_model=cluster_model,
+            ner_extractor=ner,
+        )
+    except Exception as e:
+        print("⚠ Engine wiring failed:", e)
 
     # ----------------------------
     # Register Blueprints
@@ -94,9 +100,10 @@ app = create_app()
 
 
 # ----------------------------
-# Local run only
+# Local Development Only
 # ----------------------------
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     print(f"🔥 Running locally on port {port}")
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(host="0.0.0.0", port=port, debug=False)git add .
+git commit -m "fix: render stable backend with safe ML loading"
