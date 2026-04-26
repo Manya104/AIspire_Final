@@ -1,22 +1,95 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { searchJobs, getIntentAnalysis } from '../services/api';
 import { useLang } from '../context/LanguageContext';
 import useVoiceInput from '../hooks/useVoiceInput';
 import JobCard from '../components/JobCard';
 
+async function translateText(text, targetLang) {
+  try {
+    const res = await fetch(
+      `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=${targetLang}&dt=t&q=${encodeURIComponent(text)}`
+    );
+    const json = await res.json();
+    return json[0].map((item) => item[0]).join('');
+  } catch {
+    return text;
+  }
+}
+
+async function translateResults(results, targetLang) {
+  const translated = [];
+  for (const job of results) {
+    translated.push({
+      ...job,
+      title: await translateText(job.title, targetLang),
+      description: await translateText(job.description || '', targetLang),
+    });
+  }
+  return translated;
+}
+
 export default function Search() {
   const { lang, toggleLang, t } = useLang();
   const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
+  const [queryEn, setQueryEn] = useState('');
+  const [resultsEn, setResultsEn] = useState([]);
+  const [resultsHi, setResultsHi] = useState([]);
   const [intent, setIntent] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [translating, setTranslating] = useState(false);
   const [error, setError] = useState('');
+  const [ttsState, setTtsState] = useState('idle');
+  const utteranceRef = useRef(null);
 
   const voiceLang = lang === 'hi' ? 'hi-IN' : 'en-IN';
   const { isListening, startListening } = useVoiceInput(voiceLang);
 
+  const displayResults = lang === 'hi' && resultsHi.length > 0 ? resultsHi : resultsEn;
+
+  useEffect(() => {
+    return () => {
+      speechSynthesis.cancel();
+    };
+  }, []);
+
+  // Auto-translate query when Hindi is selected
+  useEffect(() => {
+    if (lang !== 'hi') return;
+    if (!queryEn.trim()) return;
+    const timer = setTimeout(() => {
+      translateText(queryEn, 'hi').then((translated) => setQuery(translated));
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [queryEn, lang]);
+
+  // When switching language, translate existing query and results
+  useEffect(() => {
+    if (lang === 'hi') {
+      if (queryEn.trim()) {
+        translateText(queryEn, 'hi').then((translated) => setQuery(translated));
+      }
+      if (resultsEn.length > 0 && resultsHi.length === 0) {
+        setTranslating(true);
+        translateResults(resultsEn, 'hi').then((hi) => {
+          setResultsHi(hi);
+          setTranslating(false);
+        });
+      }
+    } else {
+      if (queryEn.trim()) {
+        setQuery(queryEn);
+      }
+    }
+  }, [lang]);
+
+  const handleQueryChange = (value) => {
+    setQuery(value);
+    setQueryEn(value);
+  };
+
   const handleSearch = async () => {
-    if (!query.trim()) {
+    const searchQuery = lang === 'hi' ? queryEn : query;
+    if (!searchQuery.trim()) {
       setError(t.noQuery);
       return;
     }
@@ -24,20 +97,28 @@ export default function Search() {
     setLoading(true);
     setError('');
     setIntent(null);
+    setResultsEn([]);
+    setResultsHi([]);
+    stopTTS();
 
     try {
       const [searchRes, intentRes] = await Promise.allSettled([
-        searchJobs(query, lang),
-        getIntentAnalysis(query),
+        searchJobs(searchQuery, 'en'),
+        getIntentAnalysis(searchQuery),
       ]);
 
       if (searchRes.status === 'fulfilled') {
         const data = searchRes.value.data;
         if (!data || data.error || data.length === 0) {
-          setResults([]);
           setError(t.noResults);
         } else {
-          setResults(data);
+          setResultsEn(data);
+          if (lang === 'hi') {
+            setTranslating(true);
+            const hiResults = await translateResults(data, 'hi');
+            setResultsHi(hiResults);
+            setTranslating(false);
+          }
         }
       } else {
         setError(t.error);
@@ -53,6 +134,16 @@ export default function Search() {
     }
   };
 
+  useEffect(() => {
+    if (resultsEn.length > 0 && lang === 'hi' && resultsHi.length === 0) {
+      setTranslating(true);
+      translateResults(resultsEn, 'hi').then((hi) => {
+        setResultsHi(hi);
+        setTranslating(false);
+      });
+    }
+  }, [lang]);
+
   const handleVoice = () => {
     startListening((transcript) => {
       setQuery(transcript);
@@ -62,6 +153,41 @@ export default function Search() {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') handleSearch();
+  };
+
+  // --- TTS Controls ---
+  const readResults = () => {
+    if (displayResults.length === 0) return;
+
+    speechSynthesis.cancel();
+
+    const text = displayResults
+      .map((job) => `${job.title}. Confidence: ${job.confidence_score}%. Code: ${job.code}. ${job.description}`)
+      .join('. Next result: ');
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang === 'hi' ? 'hi-IN' : 'en-IN';
+    utterance.onend = () => setTtsState('idle');
+    utterance.onerror = () => setTtsState('idle');
+    utteranceRef.current = utterance;
+
+    speechSynthesis.speak(utterance);
+    setTtsState('speaking');
+  };
+
+  const pauseTTS = () => {
+    speechSynthesis.pause();
+    setTtsState('paused');
+  };
+
+  const resumeTTS = () => {
+    speechSynthesis.resume();
+    setTtsState('speaking');
+  };
+
+  const stopTTS = () => {
+    speechSynthesis.cancel();
+    setTtsState('idle');
   };
 
   return (
@@ -75,7 +201,7 @@ export default function Search() {
           <input
             type="text"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => handleQueryChange(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder={t.placeholder}
             className="flex-1 min-w-[200px] px-4 py-3 border border-slate-300 rounded-xl focus:ring-2 focus:ring-primary focus:border-primary outline-none"
@@ -99,7 +225,7 @@ export default function Search() {
         </div>
 
         {/* Language Toggle */}
-        <div className="mt-4">
+        <div className="mt-4 flex items-center justify-between flex-wrap gap-3">
           <label className="flex items-center gap-2 cursor-pointer text-slate-600">
             <input
               type="checkbox"
@@ -109,7 +235,66 @@ export default function Search() {
             />
             <span>{t.langLabel}</span>
           </label>
+
+          {/* TTS Controls */}
+          {displayResults.length > 0 && (
+            <div className="flex items-center gap-2">
+              {ttsState === 'idle' && (
+                <button
+                  onClick={readResults}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-700 text-white text-sm font-semibold hover:bg-slate-800 transition-colors"
+                >
+                  <span className="material-symbols-outlined text-sm">volume_up</span>
+                  Read Results
+                </button>
+              )}
+              {ttsState === 'speaking' && (
+                <>
+                  <button
+                    onClick={pauseTTS}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-white text-sm font-semibold hover:bg-amber-600 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm">pause</span>
+                    Pause
+                  </button>
+                  <button
+                    onClick={stopTTS}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm">stop</span>
+                    Stop
+                  </button>
+                </>
+              )}
+              {ttsState === 'paused' && (
+                <>
+                  <button
+                    onClick={resumeTTS}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-green-600 text-white text-sm font-semibold hover:bg-green-700 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm">play_arrow</span>
+                    Resume
+                  </button>
+                  <button
+                    onClick={stopTTS}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-500 text-white text-sm font-semibold hover:bg-red-600 transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm">stop</span>
+                    Stop
+                  </button>
+                </>
+              )}
+            </div>
+          )}
         </div>
+
+        {/* Translating indicator */}
+        {translating && (
+          <p className="mt-3 text-sm text-amber-600 flex items-center gap-2">
+            <span className="inline-block size-3 border-2 border-amber-500 border-t-transparent rounded-full animate-spin"></span>
+            Translating results to Hindi...
+          </p>
+        )}
 
         {/* Intent Analysis Badge */}
         {intent && (
@@ -140,7 +325,7 @@ export default function Search() {
 
         {/* Results */}
         <div className="mt-8 grid gap-4">
-          {results.map((job, idx) => (
+          {displayResults.map((job, idx) => (
             <JobCard key={job.code + idx} job={job} lang={lang} />
           ))}
         </div>
