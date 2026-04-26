@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2dd4bf;
+  --color-background-light: #f8f6f6;
+  --color-accent-blue: #3b82f6;
+  --color-accent-pink: #ec4899;
+  --font-display: "Space Grotesk", sans-serif;
+}
+
+body {
+  font-family: "Space Grotesk", sans-serif;
+  margin: 0;
+}
+
+@keyframes scroll-left {
+  0% { transform: translateX(100%); }
+  100% { transform: translateX(-100%); }
+}
+
+.scrolling-text {
+  animation: scroll-left 22s linear infinite;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* High contrast mode for accessibility */
+.high-contrast {
+  background-color: black !important;
+  color: yellow !important;
+}
+.high-contrast input,
+.high-contrast button,
+.high-contrast .card,
+.high-contrast .results-area {
+  background-color: black !important;
+  color: yellow !important;
+  border: 2px solid yellow !important;
+}

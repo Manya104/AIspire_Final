@@ -1,0 +1,9 @@
+{
+  "name": "aispire",
+  "private": true,
+  "scripts": {
+    "dev": "npm run dev --prefix frontend-react",
+    "build": "npm run build --prefix frontend-react",
+    "preview": "npm run preview --prefix frontend-react"
+  }
+}

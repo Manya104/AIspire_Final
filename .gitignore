@@ -29,3 +29,10 @@ env/
 Thumbs.db
 
 .env
+
+# Frontend React
+frontend-react/node_modules/
+frontend-react/dist/
+
+# ML model artifacts
+backend/ml/*.pkl
